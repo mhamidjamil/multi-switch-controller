@@ -9,9 +9,9 @@ byte multi = 0;
 //configuring pins of 74HC595 pins
 const byte dataPin = 2;
 ////Pin connected to Data in (DS) of 74HC595
-const byte latchPin = 3;
+const byte latchPin = 5;
 //Pin connected to latchPin pin (ST_CP) of 74HC595 (Storage Register clock input)
-const byte clockPin = 4;
+const byte clockPin = 6;
 //Pin connected to clock pin (SH_CP) of 74HC595 (Shift Register clock input)
 //
 byte installed_ICs = 2;
