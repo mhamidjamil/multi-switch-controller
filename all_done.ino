@@ -117,25 +117,25 @@ void loop()
         time_control_100_of_sec(3);
     }
 //    IR_function();                           //check if the IR signal is present
-    int sensorValue = analogRead(phone_pin); //read the data of A0 and stor in the variable for further use...
-    {
-        if (sensorValue > 400)
-        {
-            Serial.print("      Incoming call (opening Gate)  ");
-            Serial.println(sensorValue);
-            Door_open(3);
-            // time_control_complete_sec(5); //Door will open for 5 seconds...
-        }
-        else if (sensorValue < 400)
-        {
-            myservo.write(close); //close the door by default
-        }
-    }
+    // int sensorValue = analogRead(phone_pin); //read the data of A0 and stor in the variable for further use...
+    // {
+    //     if (sensorValue > 400)
+    //     {
+    //         Serial.print("      Incoming call (opening Gate)  ");
+    //         Serial.println(sensorValue);
+    //         Door_open(3);
+    //         // time_control_complete_sec(5); //Door will open for 5 seconds...
+    //     }
+    //     else if (sensorValue < 400)
+    //     {
+    //         myservo.write(close); //close the door by default
+    //     }
+    // }
     // Look for new cards
-    if (seconds < 3)
-    {
-        Card_cheker();
-    }
+    // if (seconds < 3)
+    // {
+    //     Card_cheker();
+    // }
 //}
 //void IR_function()
 //{

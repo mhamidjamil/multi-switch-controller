@@ -1,25 +1,25 @@
+//latest Update 23-7-22
 // #include<arduino.h>
-//74HC595 related
-byte the_big_one[9][9] = {0}; //main array to control the switching
+// 74HC595 related
+byte the_big_one[9][9] = {0}; // main array to control the switching
 int button_number = 0;
 byte status = 0;
 byte room_number = 0;
 byte multi = 0;
 
-//configuring pins of 74HC595 pins
-const byte dataPin = 2;
+// configuring pins of 74HC595 pins
+const byte dataPin = 3;
 ////Pin connected to Data in (DS) of 74HC595
 const byte latchPin = 5;
-//Pin connected to latchPin pin (ST_CP) of 74HC595 (Storage Register clock input)
+// Pin connected to latchPin pin (ST_CP) of 74HC595 (Storage Register clock input)
 const byte clockPin = 6;
-//Pin connected to clock pin (SH_CP) of 74HC595 (Shift Register clock input)
-//
+// Pin connected to clock pin (SH_CP) of 74HC595 (Shift Register clock input)
+byte output_voltage = 120; //0 to 5 mapped to 0 to 255;
 byte installed_ICs = 2;
 byte relay_1 = 25;
 byte relay_2 = 26;
 bool relay_1_done = 0;
 bool relay_2_done = 0;
-
 
 unsigned int dumy_current_seconds = 0;
 bool alfa = 0;
@@ -27,8 +27,8 @@ bool beta = 0;
 byte current_loop = 0;
 int divider = 0;
 bool repetition = false;
-//looping+++++++++++++++++++++++++++++++++++++++++++++
-// int loop_starter = 4;
+// looping+++++++++++++++++++++++++++++++++++++++++++++
+//  int loop_starter = 4;
 byte looper = 4;
 byte looping = 0;
 bool looping_in_process = false;
@@ -36,7 +36,7 @@ byte loop_switch_number = 0;
 byte loop_room_number = 0;
 unsigned loop_on_seconds = 0;
 unsigned loop_off_seconds = 0;
-int loop_global_variable = 0; //it will be sent to main_array_modifier()
+int loop_global_variable = 0; // it will be sent to main_array_modifier()
 unsigned int dumy_on_seconds = 0;
 unsigned int dumy_on_seconds_main = 0;
 
@@ -61,8 +61,8 @@ unsigned int required_time_for_relay_1 = 0;
 unsigned int required_time_for_relay_2 = 0;
 //*******************************
 
-//5 and 6 are free pins
-void setup() //heart ♥ of code
+// 5 and 6 are free pins
+void setup() // heart ♥ of code
 {
     Serial.begin(9600); // Initiate a serial communication
 
@@ -73,7 +73,7 @@ void setup() //heart ♥ of code
     pinMode(latchPin, OUTPUT);
     pinMode(dataPin, OUTPUT);
     pinMode(clockPin, OUTPUT);
-    reseter(); //reset the previous data stored in 74HC595IC
+    reseter(); // reset the previous data stored in 74HC595IC
     main_array_modifier(111);
     switch_control();
     //--------------------------------------------//
@@ -82,10 +82,10 @@ void setup() //heart ♥ of code
 void loop()
 {
     time_control_1000_of_sec(1);
-    switch_timing_checker(); //chek if any switch have to change state acording to time
+    switch_timing_checker(); // chek if any switch have to change state acording to time
     if (looping_in_process == false)
     {
-        seconds_reseter(); //reset time if all switches are time independant
+        seconds_reseter(); // reset time if all switches are time independant
     }
     else
     {
@@ -110,7 +110,7 @@ void loop()
                     Serial.println("Looping of switches starting...");
                     looping_in_process = true;
                     Serial.print("Enter Room Number : ");
-                    looper--; //looper = 3
+                    looper--; // looper = 3
                 }
 
                 else if (looper == 3)
@@ -120,21 +120,21 @@ void loop()
                     Serial.println(loop_room_number);
 
                     Serial.print("Enter number of switch : ");
-                    looper--; //looper = 2
+                    looper--; // looper = 2
                 }
                 else if (looper == 2)
                 {
                     loop_switch_number = numbri;
                     Serial.println(loop_switch_number);
                     Serial.print("Enter On time in seconds : ");
-                    looper--; //looper = 1
+                    looper--; // looper = 1
                 }
                 else if (looper == 1)
                 {
                     loop_on_seconds = numbri;
                     Serial.println(loop_on_seconds);
                     Serial.print("Enter Off time in seconds : ");
-                    looper--; //looper = 1
+                    looper--; // looper = 1
                 }
                 else
                 {
@@ -199,18 +199,18 @@ void loop()
             {
                 Serial.print("working on : ");
                 Serial.println(numbri);
-                main_array_modifier(numbri); //1st of all number will be send to array_modifire which arange switches
-                switch_control();            //then this function will execute the data of array_modifier...
+                main_array_modifier(numbri); // 1st of all number will be send to array_modifire which arange switches
+                switch_control();            // then this function will execute the data of array_modifier...
             }
             // time_control_100_of_sec(3);
             numbri = 0;
         }
     }
 }
-void main_array_modifier(unsigned long int inputer) //control the input by user...brain of code
+void main_array_modifier(unsigned long int inputer) // control the input by user...brain of code
 {
 
-    int nDigits = floor(log10(abs(inputer))) + 1; //to get the lenght of inputed number
+    int nDigits = floor(log10(abs(inputer))) + 1; // to get the lenght of inputed number
     int temp_data_holder = 0;
     temp_data_holder = nDigits - 2;
     int power_holder = 10;
@@ -233,8 +233,8 @@ void main_array_modifier(unsigned long int inputer) //control the input by user.
         timer(room_number, status, button_number);
         button_number = 0;
     }
-    the_big_one[room_number - 1][0] = status;                        //assign status to array
-    for (ctr = 0; ctr < floor(log10(abs(button_number))) + 1; ctr++) //switches on off control
+    the_big_one[room_number - 1][0] = status;                        // assign status to array
+    for (ctr = 0; ctr < floor(log10(abs(button_number))) + 1; ctr++) // switches on off control
     {
         holder = new_num % 10;
         if (holder > 0)
@@ -252,21 +252,21 @@ void main_array_modifier(unsigned long int inputer) //control the input by user.
     }
 }
 
-void switch_control() //backbone of Complete Switching
+void switch_control() // backbone of Complete Switching
 {
     int i = 0;
     int j = 0;
     // int status = 0;
-    for (i = installed_ICs; i >= 0; i--) //control room number
+    for (i = installed_ICs; i >= 0; i--) // control room number
     {
-        for (j = 1; j < 9; j++) //control switch and status
+        for (j = 1; j < 9; j++) // control switch and status
         {
             if (the_big_one[i][j] == 1)
             {
-                digitalWrite(dataPin, HIGH);
+                analogWrite(dataPin, output_voltage);
                 // time_control_1000000_of_sec(1);
                 time_control_1000_of_sec(1);
-                digitalWrite(clockPin, HIGH);
+                analogWrite(clockPin, output_voltage);
                 // time_control_1000000_of_sec(1);
                 time_control_1000_of_sec(1);
                 digitalWrite(dataPin, LOW);
@@ -281,7 +281,7 @@ void switch_control() //backbone of Complete Switching
                 digitalWrite(dataPin, LOW);
                 // time_control_1000000_of_sec(1);
                 time_control_1000_of_sec(1);
-                digitalWrite(clockPin, HIGH);
+                analogWrite(clockPin, output_voltage);
                 // time_control_1000000_of_sec(1);
                 time_control_1000_of_sec(1);
                 digitalWrite(clockPin, LOW);
@@ -290,7 +290,8 @@ void switch_control() //backbone of Complete Switching
             }
         }
     }
-    digitalWrite(latchPin, HIGH);
+    // digitalWrite(latchPin, HIGH);
+    analogWrite(latchPin, output_voltage);
     // time_control_1000000_of_sec(1);
     time_control_1000_of_sec(1);
     digitalWrite(latchPin, LOW);
@@ -325,8 +326,8 @@ void reseter()
 }
 
 //______________________________________________//
-//delay provider & control the seconds backbone of time_switching()
-void time_control_complete_sec(int timer) //provides 1 second delay or delay(1000)
+// delay provider & control the seconds backbone of time_switching()
+void time_control_complete_sec(int timer) // provides 1 second delay or delay(1000)
 {
     for (; timer > 0; timer--)
     {
@@ -348,7 +349,7 @@ void time_control_complete_sec(int timer) //provides 1 second delay or delay(100
 //     }
 // }
 void time_control_100_of_sec(int timer)
-{ //provides 100 of second or (1/100) or delay(10)
+{ // provides 100 of second or (1/100) or delay(10)
     for (; timer > 0; timer--)
     {
         delay(10);
@@ -394,7 +395,7 @@ void timer(int room_number, int status, int switch_number)
 {
     byte swh = 0;
     int temp_sn = switch_number;
-    { //better output to see record
+    { // better output to see record
         Serial.println("//------------------------------------------------------//");
         Serial.print(" Switch Number : ");
         switch_number /= 100;
@@ -461,7 +462,7 @@ void timing_for_switch(int room_number_AND_switch_number, int command, unsigned 
         for (IK = 0; IK < 10; IK++)
         {
             if (delay_switching[IK][1] == room_number_AND_switch_number)
-            { //if inputed Room_number and switch number are already have a record
+            { // if inputed Room_number and switch number are already have a record
                 Serial.println("1 Match founded so over writing array");
                 delay_switching[IK][0] = 1;
                 delay_switching[IK][2] = command;
@@ -475,12 +476,12 @@ void timing_for_switch(int room_number_AND_switch_number, int command, unsigned 
     }
     bool stored = false;
     if (mil_jata_hay == false)
-    { //if inputed Room_number and switch number are not in the record
+    { // if inputed Room_number and switch number are not in the record
         for (IK = 0; IK < 10; IK++)
         {
-            if (delay_switching[IK][0] == 0) //if 1st element of array (from 0 to 9) then we can store data
+            if (delay_switching[IK][0] == 0) // if 1st element of array (from 0 to 9) then we can store data
             {
-                if (stored == false) //if data is not stored yet
+                if (stored == false) // if data is not stored yet
                 {
                     Serial.println("NO Match found so Creating new data");
                     delay_switching[IK][0] = 1;
@@ -488,7 +489,7 @@ void timing_for_switch(int room_number_AND_switch_number, int command, unsigned 
                     delay_switching[IK][2] = command;
                     delay_switching[IK][3] = req_seconds;
                     delay_switching[IK][4] = seconds;
-                    stored = true; //data is now stored this conditoin will not run in this loop
+                    stored = true; // data is now stored this conditoin will not run in this loop
                     IK = 99;
                     clean = true;
                 }
@@ -498,52 +499,52 @@ void timing_for_switch(int room_number_AND_switch_number, int command, unsigned 
 }
 
 void switch_timing_checker()
-{ //check all the switches which are supposed to on or off after a specific time
+{ // check all the switches which are supposed to on or off after a specific time
     int IK = 0;
     for (IK = 0; IK < 10; IK++)
     {
-        if (delay_switching[IK][0] == 1) //if there is any data stored
+        if (delay_switching[IK][0] == 1) // if there is any data stored
         {
             int total_time = 0;
             total_time = delay_switching[IK][3] + delay_switching[IK][4];
-            if ((total_time - 1) <= seconds) //if the required time is reached then switch will on/off
+            if ((total_time - 1) <= seconds) // if the required time is reached then switch will on/off
             {
                 int command;
-                delay_switching[IK][0] = 0; //data will clerad from array as it is not usefull after requird time
-                delay_switching[IK][1] = 0; //cleaing data
+                delay_switching[IK][0] = 0; // data will clerad from array as it is not usefull after requird time
+                delay_switching[IK][1] = 0; // cleaing data
                 command = delay_switching[IK][2];
                 Serial.print("Working on : ");
                 Serial.println(command);
                 Serial.print("Required time was :");
                 Serial.print(delay_switching[IK][3]);
                 Serial.println(" Seconds");
-                //if the required time is reached then the array_modifier and switch_control will work as normal
+                // if the required time is reached then the array_modifier and switch_control will work as normal
                 main_array_modifier(command);
                 switch_control();
 
-                delay_switching[IK][2] = 0; //cleaing data
-                delay_switching[IK][3] = 0; //cleaing data
-                delay_switching[IK][4] = 0; //cleaing data
+                delay_switching[IK][2] = 0; // cleaing data
+                delay_switching[IK][3] = 0; // cleaing data
+                delay_switching[IK][4] = 0; // cleaing data
             }
         }
     }
 }
 
 void seconds_reseter()
-{ //set seconds to 0 if seconds are not in use so it will saves the process storage and overflow of varibale
+{ // set seconds to 0 if seconds are not in use so it will saves the process storage and overflow of varibale
     int IK = 0;
     bool data_parra_hay = false;
-    for (IK = 0; IK < 10; IK++) //check the delay_switching if data found then data_parra_hay will becomes true
+    for (IK = 0; IK < 10; IK++) // check the delay_switching if data found then data_parra_hay will becomes true
     {
         if (delay_switching[IK][0] == 1)
         {
             data_parra_hay = true;
         }
     }
-    if (data_parra_hay == false) //if there is no data in the delay_switching
+    if (data_parra_hay == false) // if there is no data in the delay_switching
     {
         seconds = 0;
-        if (clean == true) //it will print bellow command just for 1 time after when ever delay swiching is used
+        if (clean == true) // it will print bellow command just for 1 time after when ever delay swiching is used
         {
             Serial.println("!!!....There is no data in seconds variable so cleaing seconds....!!!");
             clean = false;
@@ -551,10 +552,10 @@ void seconds_reseter()
     }
 }
 
-void clock_control(unsigned int req_1, unsigned int req_2) //2-1-5 and 2-1-6 are the relay switches
+void clock_control(unsigned int req_1, unsigned int req_2) // 2-1-5 and 2-1-6 are the relay switches
 {                                                          // i have to control  room 1 (1 to 8 switches) and room 2 (1 to 4 switches)
     int current_deling_relay = 0;
-    { //managing new incoming value
+    { // managing new incoming value
         if (req_1 == 1)
         {
             required_time_for_relay_1 = 0;
@@ -582,7 +583,7 @@ void clock_control(unsigned int req_1, unsigned int req_2) //2-1-5 and 2-1-6 are
         //     return 0;
         // }
     }
-    { //clock lights control
+    { // clock lights control
         if ((relay_1_done == 0) && (alfa == 0) && required_time_for_relay_1 > 1)
         {
             divider = (required_time_for_relay_1) / 12;
